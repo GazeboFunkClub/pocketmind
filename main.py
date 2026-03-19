@@ -12,7 +12,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -67,4 +67,4 @@ async def analyze_document(
     prompt = f"Document content:\n\n{text[:4000]}\n\nQuestion: {question}"
     model = genai.GenerativeModel("gemini-1.5-flash")
     response = model.generate_content(prompt)
-    return {"reply": response.text}
+    return {"reply": response.text
