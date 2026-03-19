@@ -1,11 +1,10 @@
 from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 import google.generativeai as genai
-import os
-import base64
+import os, base64, io
 import PyPDF2
 import docx
-import io
 
 app = FastAPI()
 
@@ -19,8 +18,12 @@ app.add_middleware(
 
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 def root():
+    return open("index.html").read() if os.path.exists("index.html") else HTMLResponse("<h1>PocketMind Running</h1>")
+
+@app.get("/health")
+def health():
     return {"status": "PocketMind server is running"}
 
 @app.post("/chat")
@@ -32,16 +35,13 @@ async def chat(message: str = Form(...)):
 @app.post("/analyze-image")
 async def analyze_image(
     file: UploadFile = File(...),
-    question: str = Form(default="What is in this image? Describe it in detail.")
+    question: str = Form(default="Describe this image in detail.")
 ):
     contents = await file.read()
     encoded = base64.b64encode(contents).decode("utf-8")
     mime = file.content_type or "image/jpeg"
     model = genai.GenerativeModel("gemini-1.5-flash")
-    response = model.generate_content([
-        {"mime_type": mime, "data": encoded},
-        question
-    ])
+    response = model.generate_content([{"mime_type": mime, "data": encoded}, question])
     return {"reply": response.text}
 
 @app.post("/analyze-document")
@@ -61,10 +61,9 @@ async def analyze_document(
     elif file.filename.endswith(".txt"):
         text = contents.decode("utf-8", errors="ignore")
     else:
-        return {"reply": "Unsupported file type. Please upload PDF, DOCX, or TXT."}
+        return {"reply": "Unsupported file type."}
     if not text.strip():
-        return {"reply": "Could not extract text from this document."}
-    prompt = f"Document content:\n\n{text[:4000]}\n\nQuestion: {question}"
+        return {"reply": "Could not extract text."}
     model = genai.GenerativeModel("gemini-1.5-flash")
-    response = model.generate_content(prompt)
-    return {"reply": response.text
+    response = model.generate_content(f"Document:\n\n{text[:4000]}\n\nQuestion: {question}")
+    return {"reply": response.text}
