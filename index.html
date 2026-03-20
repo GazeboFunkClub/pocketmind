@@ -26,15 +26,144 @@
   .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
   .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent3); box-shadow: 0 0 8px var(--accent3); animation: pulse 2s infinite; }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-  .setup-banner { margin: 16px; padding: 16px; background: linear-gradient(135deg, rgba(124,106,247,0.15), rgba(247,106,138,0.15)); border: 1px solid rgba(124,106,247,0.3); border-radius: var(--radius); }
-  .setup-banner h3 { font-family: 'Syne', sans-serif; font-size: 13px; color: var(--accent); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
-  .server-input-row { display: flex; gap: 8px; align-items: center; }
-  .server-input { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; }
-  .server-input:focus { border-color: var(--accent); }
-  .btn-save { background: var(--accent); color: white; border: none; border-radius: 10px; padding: 10px 16px; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
   .mode-tabs { display: flex; gap: 8px; padding: 16px 16px 8px; overflow-x: auto; scrollbar-width: none; }
   .mode-tabs::-webkit-scrollbar { display: none; }
   .tab { flex-shrink: 0; padding: 10px 18px; border-radius: 100px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+  .tab.active { background: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 4px 20px rgba(124,106,247,0.4); }
+  .chat-area { padding: 8px 16px; display: flex; flex-direction: column; gap: 12px; min-height: 300px; }
+  .message { max-width: 88%; padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.6; animation: fadeUp 0.3s ease; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .message.user { background: linear-gradient(135deg, var(--accent), #5a4fd4); color: white; align-self: flex-end; border-bottom-right-radius: 6px; }
+  .message.ai { background: var(--card); border: 1px solid var(--border); color: var(--text); align-self: flex-start; border-bottom-left-radius: 6px; }
+  .message.ai .msg-label { font-family: 'Syne', sans-serif; font-size: 10px; color: var(--accent3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; font-weight: 600; }
+  .message.error { background: rgba(247,106,138,0.15); border: 1px solid rgba(247,106,138,0.3); color: var(--accent2); align-self: center; text-align: center; font-size: 13px; }
+  .upload-preview { margin: 0 16px; padding: 12px; background: var(--card); border: 1px dashed var(--accent); border-radius: var(--radius); display: none; align-items: center; gap: 12px; }
+  .upload-preview.visible { display: flex; }
+  .preview-thumb { width: 48px; height: 48px; border-radius: 10px; object-fit: cover; }
+  .preview-icon { width: 48px; height: 48px; border-radius: 10px; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+  .preview-info { flex: 1; }
+  .preview-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .preview-type { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .preview-remove { background: none; border: none; color: var(--muted); font-size: 18px; cursor: pointer; padding: 4px; }
+  .input-area { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; padding: 12px 16px 24px; background: rgba(10,10,15,0.95); backdrop-filter: blur(20px); border-top: 1px solid var(--border); z-index: 10; }
+  .input-row { display: flex; gap: 10px; align-items: flex-end; }
+  .attach-btn { width: 44px; height: 44px; border-radius: 12px; background: var(--card); border: 1px solid var(--border); color: var(--muted); font-size: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: all 0.2s; }
+  .attach-btn:active { background: var(--accent); color: white; border-color: var(--accent); }
+  .text-input { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; resize: none; max-height: 100px; line-height: 1.5; transition: border-color 0.2s; }
+  .text-input:focus { border-color: var(--accent); }
+  .text-input::placeholder { color: var(--muted); }
+  .send-btn { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; color: white; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; box-shadow: 0 4px 15px rgba(124,106,247,0.4); transition: all 0.2s; }
+  .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .send-btn:active:not(:disabled) { transform: scale(0.92); }
+  .typing-indicator { display: flex; gap: 4px; padding: 14px 18px; background: var(--card); border: 1px solid var(--border); border-radius: 18px; border-bottom-left-radius: 6px; align-self: flex-start; width: fit-content; }
+  .typing-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: typing 1.2s infinite; }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typing { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-6px); opacity: 1; } }
+  .welcome { padding: 32px 16px; text-align: center; }
+  .welcome-icon { font-size: 52px; margin-bottom: 16px; display: block; }
+  .welcome h2 { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .welcome p { color: var(--muted); font-size: 14px; line-height: 1.6; max-width: 280px; margin: 0 auto 24px; }
+  .quick-actions { display: flex; flex-direction: column; gap: 8px; max-width: 300px; margin: 0 auto; }
+  .quick-btn { padding: 12px 16px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; text-align: left; transition: all 0.2s; display: flex; align-items: center; gap: 10px; }
+  .quick-btn:active { background: var(--accent); border-color: var(--accent); }
+  #fileInput { display: none; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <span class="logo">PocketMind</span>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="font-size:12px;color:var(--muted)" id="statusText">Ready</span>
+      <div class="status-dot"></div>
+    </div>
+  </div>
+  <div class="mode-tabs">
+    <div class="tab active" onclick="setMode('chat')" id="tab-chat">💬 Chat</div>
+    <div class="tab" onclick="setMode('image')" id="tab-image">🖼️ Image</div>
+    <div class="tab" onclick="setMode('document')" id="tab-document">📄 Document</div>
+  </div>
+  <div class="upload-preview" id="uploadPreview">
+    <div id="previewThumb"></div>
+    <div class="preview-info">
+      <div class="preview-name" id="previewName">filename.pdf</div>
+      <div class="preview-type" id="previewType">PDF Document</div>
+    </div>
+    <button class="preview-remove" onclick="removeFile()">✕</button>
+  </div>
+  <div class="chat-area" id="chatArea">
+    <div class="welcome">
+      <span class="welcome-icon">🧠</span>
+      <h2>Hello, Judah!</h2>
+      <p>Your personal AI assistant. Chat, analyse images, or read your documents.</p>
+      <div class="quick-actions">
+        <button class="quick-btn" onclick="quickAsk('What can you help me with?')"><span>✨</span> What can you help me with?</button>
+        <button class="quick-btn" onclick="setMode('image')"><span>🖼️</span> Analyse a photo</button>
+        <button class="quick-btn" onclick="setMode('document')"><span>📄</span> Read a document</button>
+      </div>
+    </div>
+  </div>
+  <div class="input-area">
+    <div class="input-row">
+      <button class="attach-btn" id="attachBtn" onclick="triggerUpload()" style="display:none">📎</button>
+      <textarea class="text-input" id="textInput" placeholder="Ask anything..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+    </div>
+  </div>
+</div>
+<input type="file" id="fileInput" onchange="handleFile(event)"/>
+<script>
+  const SERVER = 'https://pocketmind-1.onrender.com';
+  let currentMode='chat', selectedFile=null;
+
+  function showStatus(msg){const el=document.getElementById('statusText');el.textContent=msg;setTimeout(()=>el.textContent='Ready',2000);}
+  function setMode(mode){currentMode=mode;document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+mode).classList.add('active');document.getElementById('attachBtn').style.display=(mode!=='chat')?'flex':'none';const input=document.getElementById('textInput');if(mode==='image')input.placeholder='Ask about your image...';else if(mode==='document')input.placeholder='Ask about your document...';else input.placeholder='Ask anything...';removeFile();}
+  function triggerUpload(){const fi=document.getElementById('fileInput');if(currentMode==='image')fi.accept='image/*';else fi.accept='.pdf,.docx,.txt';fi.click();}
+  function handleFile(e){const file=e.target.files[0];if(!file)return;selectedFile=file;const preview=document.getElementById('uploadPreview');const thumb=document.getElementById('previewThumb');document.getElementById('previewName').textContent=file.name;document.getElementById('previewType').textContent=(file.size/1024).toFixed(0)+' KB';if(currentMode==='image'){const img=document.createElement('img');img.className='preview-thumb';img.src=URL.createObjectURL(file);thumb.innerHTML='';thumb.appendChild(img);}else{thumb.innerHTML='<div class="preview-icon">📄</div>';}preview.classList.add('visible');}
+  function removeFile(){selectedFile=null;document.getElementById('uploadPreview').classList.remove('visible');document.getElementById('fileInput').value='';}
+  function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
+  function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
+  function quickAsk(q){document.getElementById('textInput').value=q;sendMessage();}
+  function addMessage(text,type){const area=document.getElementById('chatArea');const welcome=area.querySelector('.welcome');if(welcome)welcome.remove();const div=document.createElement('div');div.className='message '+type;if(type==='ai'){div.innerHTML='<div class="msg-label">PocketMind</div>'+escapeHtml(text).replace(/\n/g,'<br>');}else{div.textContent=text;}area.appendChild(div);div.scrollIntoView({behavior:'smooth',block:'end'});}
+  function escapeHtml(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function showTyping(){const area=document.getElementById('chatArea');const div=document.createElement('div');div.className='typing-indicator';div.id='typingIndicator';div.innerHTML='<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';area.appendChild(div);div.scrollIntoView({behavior:'smooth'});}
+  function hideTyping(){const el=document.getElementById('typingIndicator');if(el)el.remove();}
+  async function sendMessage(){
+    const input=document.getElementById('textInput');
+    const question=input.value.trim();
+    if(!question&&!selectedFile)return;
+    const displayText=question||(currentMode==='image'?'Analyse this image':'Read this document');
+    addMessage(displayText,'user');
+    input.value='';input.style.height='auto';
+    document.getElementById('sendBtn').disabled=true;
+    showTyping();showStatus('Thinking...');
+    try{
+      let reply='';
+      if(currentMode==='chat'){
+        const fd=new FormData();fd.append('message',question);
+        const res=await fetch(SERVER+'/chat',{method:'POST',body:fd});
+        const data=await res.json();reply=data.reply||'No response';
+      }else if(currentMode==='image'){
+        if(!selectedFile){hideTyping();addMessage('⚠️ Please attach an image first.','error');document.getElementById('sendBtn').disabled=false;return;}
+        const fd=new FormData();fd.append('file',selectedFile);fd.append('question',question||'Describe this image in detail.');
+        const res=await fetch(SERVER+'/analyze-image',{method:'POST',body:fd});
+        const data=await res.json();reply=data.reply||'No response';removeFile();
+      }else if(currentMode==='document'){
+        if(!selectedFile){hideTyping();addMessage('⚠️ Please attach a document first.','error');document.getElementById('sendBtn').disabled=false;return;}
+        const fd=new FormData();fd.append('file',selectedFile);fd.append('question',question||'Summarize this document.');
+        const res=await fetch(SERVER+'/analyze-document',{method:'POST',body:fd});
+        const data=await res.json();reply=data.reply||'No response';removeFile();
+      }
+      hideTyping();addMessage(reply,'ai');showStatus('Done ✓');
+    }catch(err){
+      hideTyping();addMessage('⚠️ Could not reach server. Check your internet connection.','error');showStatus('Error');
+    }
+    document.getElementById('sendBtn').disabled=false;
+  }
+</script>
+</body>
+</html>  .tab { flex-shrink: 0; padding: 10px 18px; border-radius: 100px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
   .tab.active { background: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 4px 20px rgba(124,106,247,0.4); }
   .chat-area { padding: 8px 16px; display: flex; flex-direction: column; gap: 12px; min-height: 300px; }
   .message { max-width: 88%; padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.6; animation: fadeUp 0.3s ease; }
